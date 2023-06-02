@@ -1,55 +1,95 @@
-import React, { useRef, useState, useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, SafeAreaView, Pressable } from "react-native";
-import Lottie, { AnimationObject } from "lottie-react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, SafeAreaView, Pressable, TextInput, Button } from "react-native";
+
+import Checkbox from "expo-checkbox";
+import { ScrollView } from "moti";
 import { MotiView } from "moti";
 
-const NewLabel = () => {
+type TodoItemProps = {
+  toDo: Todo;
+  onPressDone: (id: number) => void;
+};
+
+type Todo = {
+  id: number;
+  text: string;
+  isDone: boolean;
+};
+
+const ToDoItem = ({ toDo, onPressDone }: TodoItemProps) => {
+  const { id, text, isDone } = toDo;
   return (
-    <View style={styles.itemContainer}>
-      <Text style={styles.text}>New!</Text>
-    </View>
+<MotiView 
+  style={styles.toDoContainer}
+  from={{
+    opacity: 0,
+    translateX: -20, // initial state
+  }}
+  animate={{
+    opacity: isDone ? 0.5 : 1,
+    translateX: 0, // final state
+  }}
+  transition={{
+    type: "timing",
+    duration: 500,
+  }}
+>
+
+      <Checkbox
+        style={styles.checkbox}
+        value={isDone}
+        onValueChange={() => onPressDone(id)}
+      />
+      <Text style={styles.text}>{text}</Text>
+    </MotiView>
   );
-}
+};
 
 export default function App() {
+  const [inputText, setInputText] = useState<string>("");
+  const [toDos, setToDos] = useState<Todo[]>([]);
+
+  const onPressAdd = () => {
+    const _toDos = [
+      ...toDos,
+      {
+        id: toDos.length + 1,
+        text: inputText,
+        isDone: false,
+      },
+    ];
+    setToDos(_toDos);
+    setInputText("");
+  };
+
+  const onPressDone = (id: number) => {
+    const _toDos = toDos.map((toDo) => {
+      if (toDo.id !== id) {
+        return toDo;
+      }
+      return {
+        ...toDo,
+        isDone: !toDo.isDone,
+      };
+    });
+    setToDos(_toDos);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.itemContainer}>
-        <Text style={styles.text}>New!</Text>
+      <ScrollView style={styles.listContainer}>
+        {toDos.map((toDo) => (
+          <ToDoItem key={toDo.id} toDo={toDo} onPressDone={onPressDone} />
+        ))}
+      </ScrollView>
+      <View style={styles.formcontainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={setInputText}  // 修正
+          value={inputText}
+        />
+        <Button title="Add" onPress={onPressAdd}/>
       </View>
-
-        {/* アニメーション１ */}
-        <MotiView
-          from={{ opacity: 0.2 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            loop: true,
-          }}
-        >
-          <NewLabel />
-        </MotiView>
-        {/* アニメーション２ */}
-        <MotiView
-          from={{scale: 1}}
-          animate={{scale: 1.2}}
-          transition={{
-            loop: true
-          }}
-        >
-          <NewLabel />
-        </MotiView>
-      <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          type: "timing",
-          duration: 5000,
-          loop: true,
-        }}
-      >
-        <View style={styles.box}></View>
-      </MotiView>
     </SafeAreaView>
   );
 }
@@ -57,26 +97,59 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#f8f8f8",
   },
-  box: {
-    width: 100,
-    height: 100,
-    backgroundColor: "red",
+  listContainer: {
+    flex: 1,
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
-  itemContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    backgroundColor: "#EC407A",
-    justifyContent: "center",
+  formcontainer: {
+    paddingVertical: 40,
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderTopWidth: 1,
+    borderColor: "#d8d8d8",
+    backgroundColor: "#ffffff",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#d8d8d8",
+    borderRadius: 10,
+    marginRight: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    backgroundColor: "#ffffff",
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  toDoContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    borderRadius: 20,
-    marginBottom: 100,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#d8d8d8",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  checkbox: {
+    marginRight: 8,
   },
   text: {
-    color: "white",
-    fontWeight: "bold",
+    fontSize: 18,
+    color: "#333",
   },
 });
