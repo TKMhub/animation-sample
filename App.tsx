@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   Animated,
+  Image,
 } from "react-native";
 
 import Checkbox from "expo-checkbox";
@@ -15,39 +16,55 @@ import { ScrollView } from "moti";
 import { MotiView } from "moti";
 import { Easing } from "react-native-reanimated";
 
+const MAX_HEADER_HEIGHT = 150;
+const MIN_AVATER_SIZE =100;
+const AVATAR_TOP = MAX_HEADER_HEIGHT - MIN_AVATER_SIZE /2;
+
+
 export default function App() {
   const animatedScrollY = useRef(new Animated.Value(0)).current;
 
   return (
-    <ScrollView
-      onScroll={Animated.event([
+    <ScrollView style={styles.container}>
+      <ScrollView>
+        <View style={{height:MAX_HEADER_HEIGHT * 1.5}}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+        <View style={styles.item}/>
+      </ScrollView>
+      <View 
+      style={[
+        styles.headerImage,
         {
-          nativeEvent: {
-            contentOffset: {
-              y: animatedScrollY,
-            },
-          },
-        },
-      ])}
-      scrollEventThrottle={16}
-    >
-      <View style={styles.container}>
-        <View style={{ height: 500 }} />
-        <Animated.View
-          style={{
-            height: 100,
-            width: 100,
-            margin: 20,
-            backgroundColor: "red",
-            opacity: animatedScrollY.interpolate({
-              inputRange: [0, 100],
-              outputRange: [1, 0],
-              extrapolate: "clamp",
-            }),
-          }}
+          height: MAX_HEADER_HEIGHT,
+          zIndex: 0,
+        }
+      ]}
+      >
+        <Image
+          source={require("./assets/cover.jpg")}
+          style={styles.cover}
+          resizeMethod="auto"
         />
-        <View style={{ height: 900 }} />
       </View>
+      <Image
+        source={require("./assets/avatar.jpg")}
+        style={[styles.avatar,{
+          width: MIN_AVATER_SIZE,
+          height: MIN_AVATER_SIZE,
+          top: AVATAR_TOP,
+          zIndex: 1,
+        },
+      ]}
+      />
     </ScrollView>
   );
 }
@@ -55,7 +72,27 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  item: {
+    height: 150,
+    margin: 10,
+    backgroundColor: "lightblue",
+  },
+  headerImage: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
+  cover: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+  },
+  avatar: {
+    position: "absolute",
+    left: 10,
+    borderWidth: 5,
+    borderColor: "white",
+    borderRadius: 100,
   },
 });
