@@ -1,27 +1,17 @@
-import React, { useRef, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  Pressable,
-  TextInput,
-  Button,
-  Animated,
-  Image,
-  PanResponder,
-} from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useRef } from "react";
+import { StyleSheet, View, Animated, PanResponder } from "react-native";
 
-import Checkbox from "expo-checkbox";
-import { ScrollView } from "moti";
-import { MotiView } from "moti";
-import { Easing } from "react-native-reanimated";
+import { RootStackParamList } from "../types/navigation";
 
 const SWIPE_THRESHOLD = 100;
 
-export default function App() {
-  const animatedPan = useRef(new Animated.ValueXY()).current;
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, "Tinder">;
+};
 
+export const Tinder: React.FC<Props> = () => {
+  const animatedPan = useRef(new Animated.ValueXY()).current;
 
   const panResponder = useRef(
     PanResponder.create({
@@ -31,7 +21,6 @@ export default function App() {
         { useNativeDriver: false }
       ),
       onPanResponderRelease: (_e, gestureState) => {
-        animatedPan.extractOffset();
         if (gestureState.dx > SWIPE_THRESHOLD) {
           Animated.timing(animatedPan, {
             toValue: {
@@ -82,8 +71,7 @@ export default function App() {
       </Animated.View>
     </View>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -92,8 +80,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   box: {
-    height: 600,
-    width: 350,
+    height: 250,
+    width: 200,
     backgroundColor: "#1DE9B6",
     borderRadius: 5,
   },

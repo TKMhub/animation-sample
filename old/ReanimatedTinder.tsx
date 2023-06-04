@@ -32,30 +32,30 @@ export default function App() {
       ),
       onPanResponderRelease: (_e, gestureState) => {
         animatedPan.extractOffset();
-        // if (gestureState.dx > SWIPE_THRESHOLD) {
-        //   Animated.timing(animatedPan, {
-        //     toValue: {
-        //       x: 500,
-        //       y: gestureState.dy + 200 * Math.sign(gestureState.dy),
-        //     },
-        //     duration: 300,
-        //     useNativeDriver: true,
-        //   }).start(() => animatedPan.setValue({ x: 0, y: 0 }));
-        // } else if (gestureState.dx < -SWIPE_THRESHOLD) {
-        //   Animated.timing(animatedPan, {
-        //     toValue: {
-        //       x: -500,
-        //       y: gestureState.dy + 200 * Math.sign(gestureState.dy),
-        //     },
-        //     duration: 300,
-        //     useNativeDriver: true,
-        //   }).start(() => animatedPan.setValue({ x: 0, y: 0 }));
-        // } else {
-        //   Animated.spring(animatedPan, {
-        //     toValue: { x: 0, y: 0 },
-        //     useNativeDriver: true,
-        //   }).start();
-        // }
+        if (gestureState.dx > SWIPE_THRESHOLD) {
+          Animated.timing(animatedPan, {
+            toValue: {
+              x: 500,
+              y: gestureState.dy + 200 * Math.sign(gestureState.dy),
+            },
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => animatedPan.setValue({ x: 0, y: 0 }));
+        } else if (gestureState.dx < -SWIPE_THRESHOLD) {
+          Animated.timing(animatedPan, {
+            toValue: {
+              x: -500,
+              y: gestureState.dy + 200 * Math.sign(gestureState.dy),
+            },
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => animatedPan.setValue({ x: 0, y: 0 }));
+        } else {
+          Animated.spring(animatedPan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: true,
+          }).start();
+        }
       },
     })
   ).current;
